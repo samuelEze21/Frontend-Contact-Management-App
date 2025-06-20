@@ -1,429 +1,372 @@
-import React, { useState } from "react";
-import axios from 'axios';
+import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import {
+  Container,
+  Typography,
+  Button,
+  Grid,
+  Box,
+  Card,
+  CardContent,
+  CardActions,
+  Paper,
+  Avatar,
+  Rating,
+  Divider,
+  Stack,
+} from '@mui/material';
+import {
+  ContactPhone,
+  Message,
+  Security,
+  Speed,
+  Analytics,
+  CloudSync,
+  Campaign,
+  AutoGraph,
+  // Remove Integration as it doesn't exist
+  Support,
+  Facebook,
+  Twitter,
+  LinkedIn,
+  GitHub,
+} from '@mui/icons-material';
+
+const features = [
+  {
+    icon: <ContactPhone sx={{ fontSize: 40 }} />,
+    title: 'Contact Management',
+    description:
+      'Easily organize and manage your contacts with our intuitive interface. Add, edit, and delete contacts effortlessly.',
+  },
+  {
+    icon: <Message sx={{ fontSize: 40 }} />,
+    title: 'Bulk SMS',
+    description:
+      'Send messages to multiple contacts at once. Perfect for announcements, greetings, or important updates.',
+  },
+  {
+    icon: <Security sx={{ fontSize: 40 }} />,
+    title: 'Secure Access',
+    description:
+      'Your contacts are protected with secure authentication. Only authorized users can access the contact database.',
+  },
+  {
+    icon: <Speed sx={{ fontSize: 40 }} />,
+    title: 'Fast & Responsive',
+    description:
+      'Enjoy a smooth experience with our fast and responsive design. Works perfectly on all devices.',
+  },
+];
+
+const testimonials = [
+  {
+    name: 'Sarah Johnson',
+    role: 'Marketing Director',
+    company: 'TechCorp',
+    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80',
+    content: 'This platform has revolutionized how we manage our contact lists. The bulk SMS feature is a game-changer!',
+    rating: 5,
+  },
+  {
+    name: 'Michael Chen',
+    role: 'Sales Manager',
+    company: 'GlobalTech',
+    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80',
+    content: 'The analytics dashboard provides invaluable insights for our marketing campaigns. Highly recommended!',
+    rating: 5,
+  },
+  {
+    name: 'Emma Davis',
+    role: 'CEO',
+    company: 'Innovate Inc',
+    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80',
+    content: 'Outstanding customer support and regular feature updates. This is exactly what we needed for our growing business.',
+    rating: 5,
+  },
+];
 
 const Home = () => {
-
-  // State for modal visibility and registration form state
-  const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    phone: '',
-    email: '',
-    username: '',
-    password: '',
-    confirmPassword: '',
-  });
-  const [loginData, setLoginData] = useState({
-    username: '',
-    password: '',
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  // Function to toggle modal visibility
-  const toggleModal = () => setShowModal(!showModal);
-
-
-  // Handle form input changes for registration
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  // Handle form input changes for login
-  const handleLoginChange = (e) => {
-    const { name, value } = e.target;
-    setLoginData({
-      ...loginData,
-      [name]: value,
-    });
-  };
-
-  // Handle registration form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    // Validate password and confirm password match
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match.');
-      setLoading(false);
-      return;
-    }
-
-    try {
-      // Make API call to register the user
-      const response = await axios.post("http://localhost:8082/register", formData);
-      console.log(response.data); // Handle success response
-
-      // Redirect to registration success page
-      window.location.href = "/registrationSuccess";
-    } catch (err) {
-      setError('Registration failed. Please try again.');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  
-
-  // Handle login form submission
-  const handleLoginSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    try {
-      // Make API call to login the user
-      const response = await axios.post("http://localhost:8082/auth", loginData);
-      console.log(response.data); // Handle success response
-      // Redirect to dashboard or another page after login
-      window.location.href = "/LoginSuccess";
-    } catch (err) {
-      setError('Login failed. Please check your credentials and try again.');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div>
-      {/* Header Section */}
-      <header
-        className="bg-gray-800 p-4 text-white flex flex-col items-center justify-center"
-        style={{
-          background: "linear-gradient(to right, rgb(125, 108, 108),rgb(4, 25, 34))",
+    <Box sx={{ flexGrow: 1 }}>
+      {/* Hero Section with Background Image */}
+      <Box
+        sx={{
+          position: 'relative',
+          color: 'white',
+          pt: 15,
+          pb: 15,
+          mb: 6,
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 1,
+          },
+          backgroundImage: 'url("https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80")' ,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       >
-        <h1 className="text-4xl font-bold mb-4">BizCaller+</h1>
-
-        {/* Welcome Message */}
-        <p
-          className="text-lg font-semibold px-4 py-2 rounded-md text-white shadow-md"
-          style={{
-            backgroundColor: "rgba(237, 128, 82, 0.9)",
-          }}
-        >
-          ARE YOU LOOKING FOR A CONTACT MANAGEMENT AND AUTOMATION TOOL FOR INDIVIDUALS & SMALL BUSINESSES?
-        </p>
-
-        {/* Call-to-Action Button */}
-        <button
-          className="mt-6 bg-gradient-to-r from-blue-500 to-orange-500 text-white flex items-center justify-center gap-2 py-3 px-6 rounded-md text-lg font-bold shadow-lg hover:scale-105 transition-transform"
-        >
-          <img
-            src="/assets/images/icons8-google-play-24.png" // Replace with the actual path to your Google Play icon
-            alt="Google Play"
-            className="w-6 h-6"
-          />
-          Try BizCaller for Free!
-        </button>
-      </header>
-
-        
-      {/* Why Choose Us Section */}
-      <section
-        className="py-16"
-        style={{
-          background: "linear-gradient(to right,rgb(21, 96, 123), #2980b9)", // Darker gradient to complement the form
-          color: "#ffffff", // Ensures text is visible on the dark background
-        }}
-      >
-        <div className="container mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-6">Why Choose Us?</h2>
-          <p className="mb-8">
-            We offer an easy-to-use contact management solution tailored to your needs.
-          </p>
-          <div className="flex flex-wrap justify-center gap-8">
-            <div className="bg-black p-8 rounded-md shadow-md max-w-xs">
-              <h3 className="text-xl font-bold mb-4">Feature One</h3>
-              <p>Discover tools that simplify your contact management journey.</p>
-            </div>
-            <div className="bg-black p-8 rounded-md shadow-md max-w-xs">
-              <h3 className="text-xl font-bold mb-4">Feature Two</h3>
-              <p>Get seamless integration with your favorite productivity tools.</p>
-            </div>
-            <div className="bg-black p-8 rounded-md shadow-md max-w-xs">
-              <h3 className="text-xl font-bold mb-4">Feature Three</h3>
-              <p>Enjoy a user-friendly interface with quick access to insights.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-    
-
-
-     {/* Login/ Create Account Section */}
-     <section
-        className="py-16"
-        style={{
-          background: "linear-gradient(to right, #ffecd2, #fcb69f)",
-          color: "#333333",
-        }}
-      >
-        <div className="container mx-auto flex flex-col md:flex-row items-center gap-8">
-          {/* Left Section: Login Form */}
-          <div className="flex-1 bg-gray-800 p-8 rounded-md shadow-md text-white">
-            <h2 className="text-2xl font-bold mb-6">Enjoy Seamless Contact Management Solution Today!</h2>
-            {error && <div className="text-red-500 text-center mb-4">{error}</div>}
-            <form className="flex flex-col" onSubmit={handleLoginSubmit}>
-              <input
-                type="text"
-                name="username"
-                placeholder="Username"
-                value={loginData.username}
-                onChange={handleLoginChange}
-                className="bg-gray-700 text-white border-0 rounded-md p-2 mb-4"
-                required
-              />
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={loginData.password}
-                onChange={handleLoginChange}
-                className="bg-gray-700 text-white border-0 rounded-md p-2 mb-4"
-                required
-              />
-              <button
-                type="submit"
-                className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white py-2 px-4 rounded-md"
-                disabled={loading}
+        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
+          <Grid container spacing={4} alignItems="center">
+            <Grid item xs={12} md={6}>
+              <Typography
+                component="h1"
+                variant="h2"
+                color="inherit"
+                gutterBottom
+                sx={{ fontWeight: 'bold' }}
               >
-                {loading ? 'Logging in...' : 'Login to Dashboard'}
-              </button>
-            </form>
-
-            <p className="mt-4 text-center text-white">
-              Not Registered yet? <br />
-              <a
-                href="#register"
-                className="text-blue-400 font-bold hover:text-blue-500"
-                onClick={toggleModal} 
+                Contact Management Made Simple
+              </Typography>
+              <Typography variant="h5" color="inherit" paragraph>
+                Organize your contacts and communicate efficiently with our
+                powerful contact management system.
+              </Typography>
+              <Button
+                component={RouterLink}
+                to="/register"
+                variant="contained"
+                color="secondary"
+                size="large"
+                sx={{ mt: 2 }}
               >
-                Create A Free Account
-              </a>
-            </p>
-          </div>
+                Get Started
+              </Button>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
 
-          {/* Right Section: Image */}
-          <div className="flex-1">
-            <img
-              src="/assets/images/appuser.jpg"
-              alt="Content Image"
-              className="w-full h-[360px] object-cover rounded-md"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Modal for Registration */}
-      {showModal && (
-        <div
-          className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50"
-          onClick={toggleModal}
+      {/* Features Section */}
+      <Container maxWidth="lg" sx={{ mb: 8 }}>
+        <Typography
+          component="h2"
+          variant="h3"
+          align="center"
+          color="text.primary"
+          gutterBottom
         >
-          <div
-            className="bg-white p-8 rounded-md w-full max-w-md relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 className="text-2xl font-bold mb-6 text-center">Register Your Account</h2>
-            {error && <div className="text-red-500 text-center mb-4">{error}</div>}
-            <form className="flex flex-col" onSubmit={handleSubmit}>
-              <input
-                type="text"
-                name="firstName"
-                placeholder="First Name"
-                value={formData.firstName}
-                onChange={handleChange}
-                className="bg-gray-100 border-2 rounded-md p-2 mb-4"
-                required
-              />
-              <input
-                type="text"
-                name="lastName"
-                placeholder="Last Name"
-                value={formData.lastName}
-                onChange={handleChange}
-                className="bg-gray-100 border-2 rounded-md p-2 mb-4"
-                required
-              />
-              <input
-                type="text"
-                name="phone"
-                placeholder="Phone"
-                value={formData.phone}
-                onChange={handleChange}
-                className="bg-gray-100 border-2 rounded-md p-2 mb-4"
-                required
-              />
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={formData.email}
-                onChange={handleChange}
-                className="bg-gray-100 border-2 rounded-md p-2 mb-4"
-                required
-              />
-              <input
-                type="text"
-                name="username"
-                placeholder="Username"
-                value={formData.username}
-                onChange={handleChange}
-                className="bg-gray-100 border-2 rounded-md p-2 mb-4"
-                required
-              />
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-                className="bg-gray-100 border-2 rounded-md p-2 mb-4"
-                required
-              />
-              <input
-                type="password"
-                name="confirmPassword"
-                placeholder="Confirm Password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className="bg-gray-100 border-2 rounded-md p-2 mb-4"
-                required
-              />
-              <button
-                type="submit"
-                className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white py-2 px-4 rounded-md"
-                disabled={loading}
+          Features
+        </Typography>
+        <Grid container spacing={4} justifyContent="center">
+          {features.map((feature) => (
+            <Grid item key={feature.title} xs={12} sm={6} md={3}>
+              <Card
+                sx={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  '&:hover': {
+                    transform: 'translateY(-5px)',
+                    transition: 'transform 0.3s ease-in-out',
+                  },
+                }}
               >
-                {loading ? 'Creating Account...' : 'Create Account'}
-              </button>
-            </form>
-            <button
-              className="absolute top-2 right-2 text-xl font-bold"
-              onClick={toggleModal} // Close modal
-            >
-              &times;
-            </button>
-          </div>
-        </div>
-      )}
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      mb: 2,
+                      color: 'primary.main',
+                    }}
+                  >
+                    {feature.icon}
+                  </Box>
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="h3"
+                    align="center"
+                  >
+                    {feature.title}
+                  </Typography>
+                  <Typography align="center">{feature.description}</Typography>
+                </CardContent>
+                <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
+                  <Button
+                    component={RouterLink}
+                    to="/register"
+                    size="small"
+                    color="primary"
+                  >
+                    Learn More
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
 
+      {/* Analytics Section */}
+      <Box sx={{ bgcolor: 'grey.100', py: 8, mb: 6 }}>
+        <Container maxWidth="lg">
+          <Grid container spacing={6} alignItems="center">
+            <Grid item xs={12} md={6}>
+              <img
+                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80"
+                alt="Analytics Dashboard"
+                style={{ width: '100%', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Typography variant="h3" gutterBottom>
+                Powerful Analytics
+              </Typography>
+              <Typography variant="h6" paragraph color="text.secondary">
+                Track your communication metrics and engagement rates with our advanced analytics dashboard.
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
+                <Paper sx={{ p: 2, flex: 1 }}>
+                  <Analytics color="primary" sx={{ fontSize: 40, mb: 1 }} />
+                  <Typography variant="h6">Real-time Insights</Typography>
+                </Paper>
+                <Paper sx={{ p: 2, flex: 1 }}>
+                  <CloudSync color="primary" sx={{ fontSize: 40, mb: 1 }} />
+                  <Typography variant="h6">Auto Sync</Typography>
+                </Paper>
+              </Box>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
 
-      {/* Content and Copywriting Section */}
-      <section
-        className="py-16"
-        style={{
-          background: "linear-gradient(to right, #f9f9f9, #e0e0e0)", 
-        }}
-      >
-        <div className="container mx-auto">
-          <h2 className="text-3xl font-bold mb-6 text-center">What we Offer</h2>
-          <div className="flex flex-col md:flex-row gap-8">
+      {/* Bulk SMS Section */}
+      <Box sx={{ py: 8, mb: 6 }}>
+        <Container maxWidth="lg">
+          <Grid container spacing={6} alignItems="center" direction="row-reverse">
+            <Grid item xs={12} md={6}>
+              <img
+                src="https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=format&fit=crop&q=80"
+                alt="Bulk SMS"
+                style={{ width: '100%', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Typography variant="h3" gutterBottom>
+                Bulk SMS Made Easy
+              </Typography>
+              <Typography variant="h6" paragraph color="text.secondary">
+                Reach your entire contact list with just a few clicks. Perfect for announcements, promotions, and updates.
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
+                <Paper sx={{ p: 2, flex: 1 }}>
+                  <Campaign color="primary" sx={{ fontSize: 40, mb: 1 }} />
+                  <Typography variant="h6">Mass Messaging</Typography>
+                </Paper>
+                <Paper sx={{ p: 2, flex: 1 }}>
+                  <Message color="primary" sx={{ fontSize: 40, mb: 1 }} />
+                  <Typography variant="h6">Smart Templates</Typography>
+                </Paper>
+              </Box>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
 
-            {/* Left Content */}
-            <div className="flex-1 bg-white p-8 rounded-md shadow-md">
-              <h3 className="text-xl font-bold mb-4">Exceptional Support</h3>
-              <p>
-                Our team is here to ensure you have all the help you need, from setup
-                to day-to-day operations. We're committed to your success.
-              </p>
-            </div>
+      {/* Integration Section */}
+      <Box sx={{ bgcolor: 'grey.100', py: 8, mb: 6 }}>        
+        <Container maxWidth="lg">
+          <Grid container spacing={6} alignItems="center">
+            <Grid item xs={12} md={6}>
+              <Typography variant="h3" gutterBottom>
+                Seamless Integration
+              </Typography>
+              <Typography variant="h6" paragraph color="text.secondary">
+                Connect with your favorite tools and services. Our platform integrates smoothly with popular CRM systems and communication platforms.
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  ✓ CRM Integration
+                </Typography>
+                <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  ✓ API Access
+                </Typography>
+                <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  ✓ Custom Workflows
+                </Typography>
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <img
+                src="https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80"
+                alt="Integration"
+                style={{ width: '100%', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+              />
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
 
-            {/* Right Content */}
-            <div className="flex-1 bg-white p-8 rounded-md shadow-md">
-              <h3 className="text-xl font-bold mb-4">Powerful Insights</h3>
-              <p>
-                With BizCaller, you'll gain access to data-driven insights to enhance your
-                business strategy and grow your contact list efficiently.
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col md:flex-row gap-8">
-
-            {/* Left Content */}
-            <div className="flex-1 bg-white p-8 rounded-md shadow-md">
-              <h3 className="text-xl font-bold mb-4">Exceptional Support</h3>
-              <p>
-                Our team is here to ensure you have all the help you need, from setup
-                to day-to-day operations. We're committed to your success.
-              </p>
-            </div>
-
-            {/* Right Content */}
-            <div className="flex-1 bg-white p-8 rounded-md shadow-md">
-              <h3 className="text-xl font-bold mb-4">Powerful Insights</h3>
-              <p>
-                With BizCaller, you'll gain access to data-driven insights to enhance your
-                business strategy and grow your contact list efficiently.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-gradient-to-r from-blue-900 to-teal-700 py-12 px-6 md:flex md:items-center md:justify-between">
-
-{/* Left Column: Join Waitlist */}
-<div className="md:w-1/2 flex flex-col items-start justify-center bg-white p-6 rounded-lg shadow-md">
-  <h2 className="text-2xl font-bold text-gray-800 mb-4">
-    Join the MVP Waitlist
-  </h2>
-  <p className="text-gray-600 mb-6">
-    Be the first to Experience our Bulk SMS API for managing your contacts and automating communication.
-  </p>
-  <form className="flex flex-col w-full gap-4">
-    <input
-      type="number"
-      placeholder="Enter your whatsapp"
-      className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-    />
-    <button
-      type="submit"
-      className="bg-gradient-to-r from-teal-500 to-blue-500 text-white font-bold py-3 px-6 rounded-md shadow-md hover:scale-105 transition-transform"
-    >
-      Join Waitlist
-    </button>
-  </form>
-</div>
-
-{/* Right Column: Content with Slides */}
-<div className="md:w-1/2 mt-8 md:mt-0 flex flex-col items-start justify-center md:pl-12">
-  {/* Slide 1 */}
-  <div className="mb-8">
-    <h3 className="text-2xl font-bold text-teal-400 mb-2">
-      Revolutionizing Contact Management
-    </h3>
-    <p className="text-gray-200">
-      Our mission is to empower individuals and small businesses to take control of their communication. 
-      With features like bulk SMS and automated tools, BizCaller ensures seamless management of your business contacts.
-    </p>
-  </div>
-
-  {/* Slide 2 */}
-  <div>
-    <h3 className="text-2xl font-bold text-teal-300 mb-2">
-      Analytics Dashboard
-    </h3>
-    <p className="text-gray-200">
-      Gain insights into your communication strategy with our real-time analytics dashboard. 
-      Monitor engagement, message delivery, and campaign performance effortlessly.
-    </p>
-  </div>
-</div>
-</section>
-
-    </div>
+      {/* Testimonials Section */}
+      <Box sx={{ py: 8, mb: 6 }}>
+        <Container maxWidth="lg">
+          <Typography variant="h3" align="center" gutterBottom>
+            What Our Users Say
+          </Typography>
+          <Grid container spacing={4} sx={{ mt: 4 }}>
+            {[
+              {
+                name: 'John Smith',
+                role: 'Marketing Manager',
+                content: 'This contact management system has transformed how we handle our client communications. The bulk SMS feature is a game-changer!',
+                avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80'
+              },
+              {
+                name: 'Sarah Johnson',
+                role: 'Small Business Owner',
+                content: 'The interface is intuitive and the features are exactly what we needed. Customer support has been exceptional!',
+                avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80'
+              },
+              {
+                name: 'Michael Chen',
+                role: 'Sales Director',
+                content: 'The analytics dashboard provides invaluable insights into our communication patterns. Highly recommended!',
+                avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80'
+              }
+            ].map((testimonial, index) => (
+              <Grid item key={index} xs={12} md={4}>
+                <Paper
+                  sx={{
+                    p: 3,
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    '&:hover': {
+                      transform: 'translateY(-5px)',
+                      transition: 'transform 0.3s ease-in-out'
+                    }
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Avatar
+                      src={testimonial.avatar}
+                      sx={{ width: 56, height: 56, mr: 2 }}
+                    />
+                    <Box>
+                      <Typography variant="h6">{testimonial.name}</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {testimonial.role}
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Typography variant="body1" sx={{ flex: 1 }}>
+                    {testimonial.content}
+                  </Typography>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
+    </Box>
   );
 };
 

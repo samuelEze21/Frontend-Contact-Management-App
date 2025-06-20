@@ -1,89 +1,229 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import Register from "../components/Auth/Register"; 
-import Login from "../Components/Auth/Login";
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  IconButton,
+  Typography,
+  Menu,
+  Container,
+  Avatar,
+  Button,
+  Tooltip,
+  MenuItem,
+  useTheme,
+  useMediaQuery,
+} from '@mui/material';
+import {
+  Menu as MenuIcon,
+  ContactPhone as ContactPhoneIcon,
+} from '@mui/icons-material';
 
-function Navbar() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+const Navbar = ({ isAuthenticated }) => {
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  const openRegisterModal = () => setIsModalOpen(true);
-  const closeRegisterModal = () => setIsModalOpen(false);
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
 
-  const openLoginModal = () => setIsLoginModalOpen(true);
-  const closeLoginModal = () => setIsLoginModalOpen(false);
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    navigate('/login');
+    handleCloseUserMenu();
+  };
+
+  const navigationItems = isAuthenticated
+    ? [{ name: 'Contacts', path: '/contacts' }]
+    : [{ name: 'Home', path: '/' }];
+
+  const userMenuItems = isAuthenticated
+    ? [{ name: 'Logout', action: handleLogout }]
+    : [
+        { name: 'Login', path: '/login' },
+        { name: 'Register', path: '/register' },
+      ];
 
   return (
-    <nav className="bg-gray-800 p-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <div className="text-white text-lg font-bold">My App</div>
-        <ul className="flex space-x-4">
-          <li>
-            <Link to="/" className="text-white">
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link to="/about" className="text-white">
-              About
-            </Link>
-          </li>
-          <li>
-            <Link to="/contact" className="text-white">
-              Contact
-            </Link>
-          </li>
+    <AppBar position="static" sx={{ bgcolor: 'primary.main' }}>
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          <ContactPhoneIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <Typography
+            variant="h6"
+            noWrap
+            component={Link}
+            to="/"
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            CONTACTS
+          </Typography>
 
-          {/* Login Button that opens the modal */}
-          <li>
-            <button onClick={openLoginModal} className="text-white">
-              Login
-            </button>
-          </li>
-
-          {/* Register Button that opens the modal */}
-          <li>
-            <button onClick={openRegisterModal} className="text-white">
-              Register
-            </button>
-          </li>
-          
-        </ul>
-      </div>
-
-      {/* Register Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full relative">
-            <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-              onClick={closeRegisterModal}
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
             >
-              ✖
-            </button>
-            {/* Render the Register component inside the modal */}
-            <Register closeModal={closeRegisterModal} />
-          </div>
-        </div>
-      )}
-
-      {/* Login Modal */}
-      {isLoginModalOpen && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full relative">
-            <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-              onClick={closeLoginModal}
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: 'block', md: 'none' },
+              }}
             >
-              ✖
-            </button>
-            {/* Render the Login component inside the modal */}
-            <Login closeModal={closeLoginModal} />
-          </div>
-        </div>
-      )}
-    </nav>
+              {navigationItems.map((item) => (
+                <MenuItem
+                  key={item.name}
+                  onClick={handleCloseNavMenu}
+                  component={Link}
+                  to={item.path}
+                >
+                  <Typography textAlign="center">{item.name}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+
+          <ContactPhoneIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+          <Typography
+            variant="h5"
+            noWrap
+            component={Link}
+            to="/"
+            sx={{
+              mr: 2,
+              display: { xs: 'flex', md: 'none' },
+              flexGrow: 1,
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            CONTACTS
+          </Typography>
+
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {navigationItems.map((item) => (
+              <Button
+                key={item.name}
+                component={Link}
+                to={item.path}
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                {item.name}
+              </Button>
+            ))}
+          </Box>
+
+          <Box sx={{ flexGrow: 0 }}>
+            {isAuthenticated ? (
+              <>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar alt="User" src="/static/images/avatar/2.jpg" />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: '45px' }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  {userMenuItems.map((item) => (
+                    <MenuItem
+                      key={item.name}
+                      onClick={item.action || handleCloseUserMenu}
+                    >
+                      <Typography textAlign="center">{item.name}</Typography>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </>
+            ) : (
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Button
+                  component={Link}
+                  to="/login"
+                  variant="outlined"
+                  sx={{
+                    color: 'white',
+                    borderColor: 'white',
+                    '&:hover': {
+                      borderColor: 'secondary.main',
+                      bgcolor: 'rgba(255,255,255,0.1)',
+                    },
+                  }}
+                >
+                  Login
+                </Button>
+                <Button
+                  component={Link}
+                  to="/register"
+                  variant="contained"
+                  color="secondary"
+                >
+                  Register
+                </Button>
+              </Box>
+            )}
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
-}
+};
 
 export default Navbar;
