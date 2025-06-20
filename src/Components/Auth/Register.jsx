@@ -1,179 +1,169 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
 import {
   Container,
   Box,
   Typography,
-  Grid,
   TextField,
   Button,
-} from "@mui/material";
+  Paper,
+  Avatar,
+  Alert,
+  Link as MuiLink,
+} from '@mui/material';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 export default function Register() {
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    firstName: "",
-    lastName: "",
-    phone: "",
-    username: "",
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
   });
-
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+      setError('Passwords do not match');
       return;
     }
 
-    setError(""); 
-
     try {
-      const response = await axios.post("http://localhost:8082/register", formData);
-      if (response.status === 200) {
-        console.log("Registration successful, navigating...");
-        navigate("/registrationSuccess");
+      const response = await axios.post('http://localhost:8082/register', {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (response.status === 201) {
+        navigate('/registrationSuccess');
       } else {
-        const errorText = response.data?.message || "Registration failed";
-        setError(errorText);
+        setError('Registration failed. Please try again.');
       }
-    } catch (err) {
-      setError("An error occurred during registration");
+    } catch (error) {
+      if (error.response?.data?.message) {
+        setError(error.response.data.message);
+      } else {
+        setError('An error occurred during registration. Please try again.');
+      }
     }
   };
 
-  
   return (
-    <Container maxWidth="xs">
-      <Box sx={{ mt: 8 }}>
-        <Typography variant="h5" align="center" gutterBottom>
-          Register
-        </Typography>
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={2}>
-            {/* First Name */}
-            <Grid item xs={12}>
-              <TextField
-                label="First Name"
-                name="firstName"
-                fullWidth
-                value={formData.firstName}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Paper
+          elevation={3}
+          sx={{
+            padding: 4,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            width: '100%',
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <PersonAddIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
+            Sign Up
+          </Typography>
 
-            {/* Last Name */}
-            <Grid item xs={12}>
-              <TextField
-                label="Last Name"
-                name="lastName"
-                fullWidth
-                value={formData.lastName}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
+          {error && (
+            <Alert severity="error" sx={{ width: '100%', mb: 2 }}>
+              {error}
+            </Alert>
+          )}
 
-            {/* Username */}
-            <Grid item xs={12}>
-              <TextField
-                label="Username"
-                name="username"
-                fullWidth
-                value={formData.username}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
+          <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Username"
+              name="username"
+              autoComplete="username"
+              autoFocus
+              value={formData.username}
+              onChange={handleChange}
+              sx={{ mb: 2 }}
+            />
 
-            {/* Email */}
-            <Grid item xs={12}>
-              <TextField
-                label="Email"
-                name="email"
-                type="email"
-                fullWidth
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Email Address"
+              name="email"
+              type="email"
+              autoComplete="email"
+              value={formData.email}
+              onChange={handleChange}
+              sx={{ mb: 2 }}
+            />
 
-            {/* Phone */}
-            <Grid item xs={12}>
-              <TextField
-                label="Phone"
-                name="phone"
-                type="tel"
-                fullWidth
-                value={formData.phone}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Password"
+              name="password"
+              type="password"
+              autoComplete="new-password"
+              value={formData.password}
+              onChange={handleChange}
+              sx={{ mb: 2 }}
+            />
 
-            {/* Password */}
-            <Grid item xs={12}>
-              <TextField
-                label="Password"
-                name="password"
-                type="password"
-                fullWidth
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Confirm Password"
+              name="confirmPassword"
+              type="password"
+              autoComplete="new-password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              sx={{ mb: 3 }}
+            />
 
-            {/* Confirm Password */}
-            <Grid item xs={12}>
-              <TextField
-                label="Confirm Password"
-                name="confirmPassword"
-                type="password"
-                fullWidth
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mb: 2 }}
+            >
+              Sign Up
+            </Button>
 
-            {/* Error Message */}
-            {error && (
-              <Grid item xs={12}>
-                <Typography color="error" variant="body2">
-                  {error}
-                </Typography>
-              </Grid>
-            )}
-
-            {/* Submit Button */}
-            <Grid item xs={12}>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-              >
-                Register
-              </Button>
-            </Grid>
-         </Grid>
-        </form>
+            <Box sx={{ textAlign: 'center' }}>
+              <MuiLink component={Link} to="/login" variant="body2">
+                Already have an account? Sign In
+              </MuiLink>
+            </Box>
+          </Box>
+        </Paper>
       </Box>
     </Container>
   );
